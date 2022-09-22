@@ -80,7 +80,7 @@ atom_maze = %{
   }
 }
 
-path = nil
+path = atom_maze.south.west.south.east.south.east.south
 ```
 
 ## The String Maze
@@ -114,7 +114,7 @@ string_maze = %{
   }
 }
 
-path = nil
+path = string_maze["south"]["east"]["south"]["west"]["south"]["west"]["south"]["east"]["south"]
 
 Utils.feedback(:string_maze, [string_maze, path])
 ```
@@ -132,11 +132,29 @@ at least a 5 * 5 in width and height.
 Replace `nil` with your answers below.
 
 ```elixir
-custom_maze = nil
-
+# south, west, south, east, south, south south
 path = nil
 
-Utils.feedback(:custom_maze, [custom_maze, nil])
+custom_maze = %{
+  south: %{
+    "west" => %{
+      south: %{
+        "east" => %{
+          south: %{
+            south: %{
+              south: "Exit!"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+path = custom_maze[:south]["west"][:south]["east"][:south][:south][:south]
+# path = string_maze["south"]["east"]["south"]["west"]["south"]["west"]["south"]["east"]["south"]
+
+Utils.feedback(:custom_maze, [custom_maze, path])
 ```
 
 ## Treasure Map
