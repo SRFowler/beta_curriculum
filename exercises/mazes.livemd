@@ -196,7 +196,8 @@ treasure_map = %{
   }
 }
 
-path = nil
+path =
+  treasure_map["south ten paces"][10][:"east three paces"][[1, 2, 3]][{"turn", "right"}][:dig]
 
 Utils.feedback(:treasure_map, [treasure_map, path])
 ```
@@ -239,7 +240,12 @@ treasure_map = %{
   }
 }
 
-updated_map = %{}
+updated_map = %{
+  treasure_map
+  | "south ten paces" => %{
+      10 => %{"east three paces": %{[1, 2, 3] => %{{"turn", "right"} => %{dig: "taken"}}}}
+    }
+}
 
 Utils.feedback(:update_treasure_map, [treasure_map, updated_map])
 ```
