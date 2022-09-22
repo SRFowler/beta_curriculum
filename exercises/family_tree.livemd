@@ -100,7 +100,7 @@ classDiagram
     Uther --> Leia
 ```
 
-<!-- livebook:{"attrs":{"assertions":"assert is_map(family_tree), \"Ensure `family_tree` is a map.\"\nassert %{name: \"Arthur\"} = family_tree, \"Ensure `family_tree` starts with Arthur.\"\n\nassert %{name: \"Arthur\", parents: parents} = family_tree,\n  \"Ensure Arthur in `family_tree` has a list of parents.\"\n\nassert length(parents) == 2, \"Ensure both parents are included.\"","code":"family_tree = %{}","solution":"han = %{name: \"Han\", status: :grand_parent, age: 81}\nleia = %{name: \"Leia\", status: :grand_parent, age: 82}\nbob = %{name: \"Bob\", status: :grand_parent, age: 68}\nbridget = %{name: \"Bridget\", status: :grand_parent, age: 70}\n\nuther = %{name: \"Uther\", status: :parent, age: 56, parents: [han, leia]}\nygraine = %{name: \"Ygraine\", status: :parent, age: 68, parents: [bob, bridget]}\n\narthur = %{name: \"Arthur\", status: :child, age: 22, parents: [uther, ygraine]}\n\nfamily_tree = arthur"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"assertions":"assert is_map(family_tree), \"Ensure `family_tree` is a map.\"\nassert %{name: \"Arthur\"} = family_tree, \"Ensure `family_tree` starts with Arthur.\"\n\nassert %{name: \"Arthur\", parents: parents} = family_tree,\n  \"Ensure Arthur in `family_tree` has a list of parents.\"\n\nassert length(parents) == 2, \"Ensure both parents are included.\"","attempts":6,"code":"# person = %{name: string, age: int, status: atom, parents: list of maps}\nhan = %{name: \"Han\", age: 81, status: :grand_parent, parents: nil}\nleia = %{name: \"Leia\", age: 82, status: :grand_parent, parents: nil}\nbob = %{name: \"Bob\", age: 68, status: :grand_parent, parents: nil}\nbridget = %{name: \"Bridget\", age: 70, status: :grand_parent, parents: nil}\nuther = %{name: \"Uther\", age: 56, status: :parent, parents: [han, leia]}\nygraine = %{name: \"Ygraine\", age: 45, status: :parent, parents: [bob, bridget]}\narthur = %{name: \"Arthur\", age: 22, status: :child, parents: [ygraine, uther]}\nfamily_tree = arthur","solution":"han = %{name: \"Han\", status: :grand_parent, age: 81}\nleia = %{name: \"Leia\", status: :grand_parent, age: 82}\nbob = %{name: \"Bob\", status: :grand_parent, age: 68}\nbridget = %{name: \"Bridget\", status: :grand_parent, age: 70}\n\nuther = %{name: \"Uther\", status: :parent, age: 56, parents: [han, leia]}\nygraine = %{name: \"Ygraine\", status: :parent, age: 68, parents: [bob, bridget]}\n\narthur = %{name: \"Arthur\", status: :child, age: 22, parents: [uther, ygraine]}\n\nfamily_tree = arthur","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -108,15 +108,67 @@ ExUnit.start(auto_run: false)
 defmodule Assertion do
   use ExUnit.Case
 
-  test "" do
-    family_tree = %{}
-    assert is_map(family_tree), "Ensure `family_tree` is a map."
-    assert %{name: "Arthur"} = family_tree, "Ensure `family_tree` starts with Arthur."
+  test "Exercise" do
+    try do
+      Process.flag(:trap_exit, true)
+      # person = %{name: string, age: int, status: atom, parents: list of maps}
+      han = %{name: "Han", age: 81, status: :grand_parent, parents: nil}
+      leia = %{name: "Leia", age: 82, status: :grand_parent, parents: nil}
+      bob = %{name: "Bob", age: 68, status: :grand_parent, parents: nil}
+      bridget = %{name: "Bridget", age: 70, status: :grand_parent, parents: nil}
+      uther = %{name: "Uther", age: 56, status: :parent, parents: [han, leia]}
+      ygraine = %{name: "Ygraine", age: 45, status: :parent, parents: [bob, bridget]}
+      arthur = %{name: "Arthur", age: 22, status: :child, parents: [ygraine, uther]}
+      family_tree = arthur
+      assert is_map(family_tree), "Ensure `family_tree` is a map."
+      assert %{name: "Arthur"} = family_tree, "Ensure `family_tree` starts with Arthur."
 
-    assert %{name: "Arthur", parents: parents} = family_tree,
-           "Ensure Arthur in `family_tree` has a list of parents."
+      assert %{name: "Arthur", parents: parents} = family_tree,
+             "Ensure Arthur in `family_tree` has a list of parents."
 
-    assert length(parents) == 2, "Ensure both parents are included."
+      assert length(parents) == 2, "Ensure both parents are included."
+    catch
+      error ->
+        flunk("""
+          Your solution threw the following error:
+
+          #{inspect(error)}
+        """)
+
+      :exit, {error, {GenServer, message_type, [_pid, message, _timeout]}} ->
+        flunk("""
+            GenServer crashed with the following error:
+
+            #{inspect(error)}
+
+            When it recieved: #{inspect(message)} #{message_type}
+
+            Likely you need to define the corresponding handler for #{inspect(message)}.
+
+            Ensure you defined a handle_call/3, handle_info/2, or handle_cast/2 or appropriate handler function.
+
+              def handle_call(:message, _from, state) do
+                ...
+              end
+
+            Also ensure you call GenServer.call/2, GenServer.cast/2, or otherwise send the message correctly.
+
+              GenServer.call(pid, :message)
+        """)
+
+      :exit, error ->
+        flunk("""
+          Unhandled exit with the following error:
+
+          #{inspect(error)}
+        """)
+    after
+      # all warnings and errors are printed to the previous Kino Frame
+      # to avoid cluttering the test results display.
+      Process.sleep(10)
+      Kino.render(Kino.Markdown.new("### Test Results 
+<hr/>"))
+    end
   end
 end
 
@@ -124,7 +176,16 @@ ExUnit.run()
 
 # Make variables and modules defined in the test available.
 # Also allows for exploration using the output of the cell.
-family_tree = %{}
+# Unfortunately, this results in duplication of warnings.
+# person = %{name: string, age: int, status: atom, parents: list of maps}
+han = %{name: "Han", age: 81, status: :grand_parent, parents: nil}
+leia = %{name: "Leia", age: 82, status: :grand_parent, parents: nil}
+bob = %{name: "Bob", age: 68, status: :grand_parent, parents: nil}
+bridget = %{name: "Bridget", age: 70, status: :grand_parent, parents: nil}
+uther = %{name: "Uther", age: 56, status: :parent, parents: [han, leia]}
+ygraine = %{name: "Ygraine", age: 45, status: :parent, parents: [bob, bridget]}
+arthur = %{name: "Arthur", age: 22, status: :child, parents: [ygraine, uther]}
+family_tree = arthur
 ```
 
 ## Commit Your Progress
