@@ -87,7 +87,7 @@ flowchart
 In the Elixir cell below, Create a list of your favourite foods as strings.
 
 ```elixir
-
+["pizza", "coffee", "ice cream"]
 ```
 
 ## List Operators
@@ -154,13 +154,13 @@ step2 -- [2]
 In the Elixir cell below, add `[1, 2, 3]` and `[4, 5, 6]` together to make `[1, 2, 3, 4, 5, 6].`
 
 ```elixir
-
+[1, 2, 3] ++ [4, 5, 6]
 ```
 
 In the Elixir cell below, remove `[1]` from `[1, 1, 2, 3]` to make `[1, 2, 3]`
 
 ```elixir
-
+[1, 1, 2, 3] -- [1]
 ```
 
 ## Prepending
@@ -190,7 +190,8 @@ list = [2, 3]
 In the Elixir cell below, prepend `["hello"]` to the list `["world"]` to make `["hello", "world"]`
 
 ```elixir
-
+world = ["world"]
+["hello" | world]
 ```
 
 ## Pattern Matching Lists
