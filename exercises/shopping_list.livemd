@@ -30,7 +30,23 @@ In the Elixir cells below, use `++` and `--` to add the items show.
 * Remove `"grapes"` and `"walnuts"` from the `shopping_cart`
 * Add three `"banana"`s to the `shopping_cart`
 
-<!-- livebook:{"attrs":{"assertions":"list = [] ++ [\"grapes\", \"walnuts\", \"apples\"]\nlist = list ++ [\"blueberries\", \"chocolate\", \"pizza\"]\nlist = list -- [\"grapes\", \"walnuts\"]\nlist = list ++ [\"banana\", \"banana\", \"banana\"]\n\nassert is_list(shopping_cart), \"Ensure shopping_list is still a list.\"\n\nassert Enum.sort(list) == Enum.sort(shopping_cart),\n  \"Ensure your shopping list has all of the expected items\"\n\nassert shopping_cart == list, \"Ensure you add and remove items in the expected order\"","attempts":10,"code":"shopping_cart = []\nshopping_cart = shopping_cart ++ [\"grapes\", \"walnuts\", \"apples\"]\nshopping_cart = shopping_cart ++ [\"blueberries\", \"chocolate\", \"pizza\"]\nshopping_cart = shopping_cart -- [\"grapes\", \"walnuts\"]\nshopping_cart = shopping_cart ++ [\"banana\", \"banana\", \"banana\"]","solution":"shopping_cart = []\n\nshopping_cart = shopping_cart ++ ~w[grapes walnuts apples]\nshopping_cart = shopping_cart ++ ~w[blueberries chocolate pizza]\nshopping_cart = shopping_cart -- ~w[grapes walnuts]\nshopping_cart = shopping_cart ++ ~w[banana banana banana]","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+<details style="background-color: lightgreen; padding: 1rem; margin: 1rem 0;">
+<summary>Hint</summary>
+
+```elixir
+shopping_cart = []
+
+shopping_cart = shopping_cart ++ ["grapes", "walnuts", "apples"]
+shopping_cart = shopping_cart ++ ["blueberries", "chocolate", "pizza"]
+shopping_cart = shopping_cart -- ["grapes", "walnuts"]
+shopping_cart = shopping_cart ++ ["banana", "banana", "banana"]
+```
+
+</details>
+
+Enter your solution below.
+
+<!-- livebook:{"attrs":{"assertions":"list = [] ++ [\"grapes\", \"walnuts\", \"apples\"]\nlist = list ++ [\"blueberries\", \"chocolate\", \"pizza\"]\nlist = list -- [\"grapes\", \"walnuts\"]\nlist = list ++ [\"banana\", \"banana\", \"banana\"]\n\nassert is_list(shopping_cart), \"Ensure shopping_list is still a list.\"\n\nassert shopping_cart == list","attempts":3,"code":"shopping_cart = [1]","solution":"","title":"Shopping Cart"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -38,14 +54,10 @@ ExUnit.start(auto_run: false)
 defmodule Assertion do
   use ExUnit.Case
 
-  test "Exercise" do
+  test "Shopping Cart" do
     try do
       Process.flag(:trap_exit, true)
-      shopping_cart = []
-      shopping_cart = shopping_cart ++ ["grapes", "walnuts", "apples"]
-      shopping_cart = shopping_cart ++ ["blueberries", "chocolate", "pizza"]
-      shopping_cart = shopping_cart -- ["grapes", "walnuts"]
-      shopping_cart = shopping_cart ++ ["banana", "banana", "banana"]
+      shopping_cart = [1]
       list = [] ++ ["grapes", "walnuts", "apples"]
       list = list ++ ["blueberries", "chocolate", "pizza"]
       list = list -- ["grapes", "walnuts"]
@@ -53,10 +65,7 @@ defmodule Assertion do
 
       assert is_list(shopping_cart), "Ensure shopping_list is still a list."
 
-      assert Enum.sort(list) == Enum.sort(shopping_cart),
-             "Ensure your shopping list has all of the expected items"
-
-      assert shopping_cart == list, "Ensure you add and remove items in the expected order"
+      assert shopping_cart == list
     catch
       error ->
         flunk("""
@@ -71,7 +80,7 @@ defmodule Assertion do
 
             #{inspect(error)}
 
-            When it recieved: #{inspect(message)} #{message_type}
+            When it received: #{inspect(message)} #{message_type}
 
             Likely you need to define the corresponding handler for #{inspect(message)}.
 
@@ -107,11 +116,7 @@ ExUnit.run()
 # Make variables and modules defined in the test available.
 # Also allows for exploration using the output of the cell.
 # Unfortunately, this results in duplication of warnings.
-shopping_cart = []
-shopping_cart = shopping_cart ++ ["grapes", "walnuts", "apples"]
-shopping_cart = shopping_cart ++ ["blueberries", "chocolate", "pizza"]
-shopping_cart = shopping_cart -- ["grapes", "walnuts"]
-shopping_cart = shopping_cart ++ ["banana", "banana", "banana"]
+shopping_cart = [1]
 ```
 
 ## Text Shopping List With Quantities
@@ -126,12 +131,23 @@ items from the `shopping_cart`
 * Add `2` `bars_of_butter` and `10` `candies`
 * Remove `2` `bars_of_butter`
 * Remove `5` `candies` (Notice `5` and not `10`!).
-  <details>
-  <summary>Hint</summary>
-  Likely you will need to remove 10 candies, and then add 5 candies.
-  </details>
 
-<!-- livebook:{"attrs":{"assertions":"list = [] ++ [milk: 1, eggs: 12]\nlist = list ++ [bars_of_butter: 2, candies: 10]\nlist = list -- [bars_of_butter: 2]\nlist = list -- [candies: 10]\nlist = list ++ [candies: 5]\n\nassert is_list(shopping_cart), \"Ensure shopping_list is still a list.\"\n\nassert Enum.sort(list) == Enum.sort(shopping_cart),\n  \"Ensure your shopping list has all of the expected items\"\n\nassert shopping_cart == list, \"Ensure you add and remove items in the expected order\"","attempts":10,"code":"shopping_cart = []\nshopping_cart = shopping_cart ++ [milk: 1, eggs: 12]\nshopping_cart = shopping_cart ++ [bars_of_butter: 2, candies: 10]\nshopping_cart = shopping_cart -- [bars_of_butter: 2]\nshopping_cart = shopping_cart -- [candies: 10]\nshopping_cart = shopping_cart ++ [candies: 5]","solution":"shopping_cart = []\n\nshopping_cart = shopping_cart ++ [milk: 1, eggs: 12]\nshopping_cart = shopping_cart ++ [bars_of_butter: 2, candies: 10]\nshopping_cart = shopping_cart -- [bars_of_butter: 2]\nshopping_cart = shopping_cart -- [candies: 10]\nshopping_cart = shopping_cart ++ [candies: 5]","title":"Exercise"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
+<details style="background-color: lightgreen; padding: 1rem; margin: 1rem 0;">
+<summary>Hint</summary>
+
+```elixir
+shopping_cart = []
+
+shopping_cart = shopping_cart ++ [milk: 1, eggs: 12]
+shopping_cart = shopping_cart ++ [bars_of_butter: 2, candies: 10]
+shopping_cart = shopping_cart -- [bars_of_butter: 2]
+shopping_cart = shopping_cart -- [candies: 10]
+shopping_cart = shopping_cart ++ [candies: 5]
+```
+
+</details>
+
+<!-- livebook:{"attrs":{"assertions":"list = [] ++ [milk: 1, eggs: 12]\nlist = list ++ [bars_of_butter: 2, candies: 10]\nlist = list -- [bars_of_butter: 2]\nlist = list -- [candies: 10]\nlist = list ++ [candies: 5]\n\nassert is_list(shopping_cart), \"Ensure shopping_list is still a list.\"\n\nassert shopping_cart == list","attempts":3,"code":"shopping_cart = []","solution":"","title":"Shopping Cart With Quantities"},"kind":"Elixir.TestedCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 ExUnit.start(auto_run: false)
@@ -139,15 +155,10 @@ ExUnit.start(auto_run: false)
 defmodule Assertion do
   use ExUnit.Case
 
-  test "Exercise" do
+  test "Shopping Cart With Quantities" do
     try do
       Process.flag(:trap_exit, true)
       shopping_cart = []
-      shopping_cart = shopping_cart ++ [milk: 1, eggs: 12]
-      shopping_cart = shopping_cart ++ [bars_of_butter: 2, candies: 10]
-      shopping_cart = shopping_cart -- [bars_of_butter: 2]
-      shopping_cart = shopping_cart -- [candies: 10]
-      shopping_cart = shopping_cart ++ [candies: 5]
       list = [] ++ [milk: 1, eggs: 12]
       list = list ++ [bars_of_butter: 2, candies: 10]
       list = list -- [bars_of_butter: 2]
@@ -156,10 +167,7 @@ defmodule Assertion do
 
       assert is_list(shopping_cart), "Ensure shopping_list is still a list."
 
-      assert Enum.sort(list) == Enum.sort(shopping_cart),
-             "Ensure your shopping list has all of the expected items"
-
-      assert shopping_cart == list, "Ensure you add and remove items in the expected order"
+      assert shopping_cart == list
     catch
       error ->
         flunk("""
@@ -174,7 +182,7 @@ defmodule Assertion do
 
             #{inspect(error)}
 
-            When it recieved: #{inspect(message)} #{message_type}
+            When it received: #{inspect(message)} #{message_type}
 
             Likely you need to define the corresponding handler for #{inspect(message)}.
 
@@ -211,11 +219,6 @@ ExUnit.run()
 # Also allows for exploration using the output of the cell.
 # Unfortunately, this results in duplication of warnings.
 shopping_cart = []
-shopping_cart = shopping_cart ++ [milk: 1, eggs: 12]
-shopping_cart = shopping_cart ++ [bars_of_butter: 2, candies: 10]
-shopping_cart = shopping_cart -- [bars_of_butter: 2]
-shopping_cart = shopping_cart -- [candies: 10]
-shopping_cart = shopping_cart ++ [candies: 5]
 ```
 
 ## Commit Your Progress
@@ -229,6 +232,6 @@ $ git commit -m "finish shopping list exercise"
 
 ## Up Next
 
-| Previous                       | Next                                           |
-| ------------------------------ | ---------------------------------------------: |
-| [Maps](../reading/maps.livemd) | [Family Tree](../exercises/family_tree.livemd) |
+| Previous                                                                                 | Next                                           |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------: |
+| [Pattern Matching With Collections](../reading/pattern_matching_with_collections.livemd) | [Family Tree](../exercises/family_tree.livemd) |
