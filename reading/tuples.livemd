@@ -61,7 +61,7 @@ the second element.
 </details>
 
 ```elixir
-
+{:ok, "got it!"}
 ```
 
 ## Pattern Matching
@@ -146,7 +146,8 @@ Replace `jewel` with your answer.
 </details>
 
 ```elixir
-jewel = [1, 2, "jewel"]
+[_, _, jewel] = [1, 2, "jewel"]
+jewel
 ```
 
 ## Further Reading
