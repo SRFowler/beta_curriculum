@@ -278,7 +278,11 @@ is_even? = fn int -> rem(int, 2) == 0 end
 Enter your solution below.
 
 ```elixir
+# IO.inspect(rem(6,2))
 
+is_even? = fn number -> rem(number, 2) == 0 end
+
+is_even?.(282_378)
 ```
 
 ## Multi-Parameter Functions
@@ -344,7 +348,9 @@ calculate_force = fn mass, acceleration -> mass * acceleration end
 Enter your solution below.
 
 ```elixir
+calculate_force = fn mass, acceleration -> mass * acceleration end
 
+calculate_force.(240, 23)
 ```
 
 ## Shorthand Syntax
@@ -393,7 +399,10 @@ subtract = &(&1 - &2)
 Enter your solution below.
 
 ```elixir
+subtract = &(&1 - &2)
 
+subtract.(1, 1)
+subtract.(20, 25)
 ```
 
 ### Your Turn
@@ -419,7 +428,9 @@ multiply_three = &(&1 * &2 * &3)
 Enter your solution below.
 
 ```elixir
+multiply_three = &(&1 * &2 * &3)
 
+multiply_three.(2, 2, 2)
 ```
 
 ## First-class Functions
@@ -508,6 +519,8 @@ Enter your solution below.
 
 ```elixir
 call_with_20 = nil
+
+call_with_10_and_20 = fn callback -> callback.(10, 20) end
 ```
 
 ## Pipe Operator
@@ -620,7 +633,13 @@ multiply = fn int1, int2 -> int1 * int2 end
 Enter your solution below.
 
 ```elixir
+add = fn a, b -> a + b end
+subtract = fn a, b -> a - b end
+multiply = fn a, b -> a * b end
 
+# add = fn -> &(&1 + &2) end # Does not work. This is treated as a function with arity 0
+
+10 |> add.(2) |> multiply.(3) |> subtract.(4)
 ```
 
 ## Commit Your Progress
