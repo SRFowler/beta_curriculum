@@ -113,7 +113,14 @@ end
 Enter your solution below.
 
 ```elixir
+temprature = Enum.random(0..20)
+IO.puts(temprature)
 
+if temprature > 10 do
+  :hot
+else
+  :cold
+end
 ```
 
 ## Clear Control Flow
@@ -414,7 +421,14 @@ end
 </details>
 
 ```elixir
+grade = 0
 
+cond do
+  grade in 85..100 -> "A"
+  grade >= 70 -> "B"
+  grade >= 59 -> "C"
+  grade in 1..58 -> "D"
+end
 ```
 
 ## Unless
@@ -468,7 +482,11 @@ In the Elixir cell below
 * Create an `unless` statement. which returns `"awake"` unless `tired`.
 
 ```elixir
+tired = false
 
+unless tired do
+  "awake"
+end
 ```
 
 ## Commit Your Progress
