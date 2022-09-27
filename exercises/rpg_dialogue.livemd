@@ -56,6 +56,9 @@ Then implement the `Character` functions to generate dialogue according to the d
 
 ```elixir
 defmodule Character do
+  @enforce_keys [:name]
+  defstruct [:name, :class, :weapon]
+
   @moduledoc """
   Character
 
@@ -74,6 +77,7 @@ defmodule Character do
      "My name is Aragorn."
   """
   def introduce(character) do
+    "My name is #{character.name}."
   end
 
   @doc """
@@ -88,6 +92,10 @@ defmodule Character do
     "I attack with my sword!"
   """
   def attack(character) do
+    case character.weapon do
+      nil -> "I attack!"
+      _ -> "I attack with my #{character.weapon}!"
+    end
   end
 
   @doc """
@@ -102,6 +110,7 @@ defmodule Character do
     "I am a ranger."
   """
   def class(character) do
+    "I am a #{character.class}"
   end
 
   @doc """
@@ -116,6 +125,7 @@ defmodule Character do
     "My name is Aragorn and I am a ranger!"
   """
   def war_cry(character) do
+    "My name is #{character.name} and I am a #{character.class}!"
   end
 
   @doc """
@@ -130,8 +140,19 @@ defmodule Character do
     "My name is Aragorn and I have defeated the warrior Gimli!"
   """
   def defeat(character1, character2) do
+    "My name is #{character1.name} and I have defeated the #{character2.class} #{character2.name}!"
   end
 end
+```
+
+```elixir
+## Test
+grandi = %Character{name: "Grandi", class: "Cleric", weapon: "Hammer"}
+
+Character.introduce(grandi)
+Character.attack(grandi)
+Character.class(grandi)
+Character.war_cry(grandi)
 ```
 
 ### Bonus: Character Instances
@@ -176,7 +197,9 @@ Character.introduce(aragorn)
 Enter your solution below.
 
 ```elixir
-
+aragorn = %Character{name: "Aragorn", class: "ranger", weapon: "sword"}
+gandalf = %Character{name: "Gandalf", class: "wizard", weapon: "staff"}
+gimli = %Character{name: "Gimli", class: "warrior", weapon: "axe"}
 ```
 
 ### Bonus: Handle `nil` Fields.
@@ -198,6 +221,12 @@ Character.attack(%Character{name: "Gimli"})
 ```
 
 You have complete creative control over how you would like to change the dialogue when fields used the the body of the functions above are `nil`.
+
+```elixir
+# Test 
+# Unarmed character
+Character.attack(%Character{name: "Marven", class: "Monk"})
+```
 
 ## Commit Your Progress
 
