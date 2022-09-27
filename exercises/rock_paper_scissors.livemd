@@ -133,7 +133,10 @@ defmodule RockPaperScissors do
   end
 end
 
-RockPaperScissors.play(:rock, :paper)
+# RockPaperScissors.play(:rock, :rock)       # Draw
+# RockPaperScissors.play(:scissors, :paper)  # Player 1
+# RockPaperScissors.play(:rock, :paper)      # Player 2
+# RockPaperScissors.play(:lizard, :spock)     # Invalid. Crash
 ```
 
 ## Commit Your Progress

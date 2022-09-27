@@ -77,7 +77,16 @@ defmodule RockPaperScissorsLizardSpock do
     iex> RockPaperScissorsLizardSpock.beats?(:rock, :spock)
     false
   """
-  def beats?(guess1, guess2) do
+  def beats?(player_a, player_b) do
+    case {player_a, player_b} do
+      {:rock, :lizard} -> true
+      {:spock, :scissors} -> true
+      {:scissors, :lizard} -> true
+      {:lizard, :paper} -> true
+      {:paper, :spock} -> true
+      {:spock, :rock} -> true
+      _else -> false
+    end
   end
 
   @doc """
@@ -92,8 +101,24 @@ defmodule RockPaperScissorsLizardSpock do
     "Player 1 Wins!"
   """
   def play(player1, player2) do
+    cond do
+      player1 == player2 -> "Draw"
+      beats?(player1, player2) == true -> "Player 1 Wins!"
+      beats?(player2, player1) == true -> "Player 2 Wins!"
+    end
   end
 end
+```
+
+```elixir
+## Test box. Results are piped into IO.puts so we can see all three results at once
+
+# Draw
+RockPaperScissorsLizardSpock.play(:rock, :rock) |> IO.puts()
+# Scissors decapatiate lizard
+RockPaperScissorsLizardSpock.play(:scissors, :lizard) |> IO.puts()
+# Spock vaporizes rock
+RockPaperScissorsLizardSpock.play(:rock, :spock) |> IO.puts()
 ```
 
 ## Commit Your Progress
