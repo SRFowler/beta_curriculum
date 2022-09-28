@@ -70,6 +70,9 @@ Pokemon.attack(attacker, defender)
 
 ```elixir
 defmodule Pokemon do
+  # Declare any variables without default values LEFT of those with default values 
+  defstruct [:name, :type, :speed, health: 20, attack: 5]
+
   @moduledoc """
   Pokemon
 
@@ -81,6 +84,42 @@ defmodule Pokemon do
     iex> %Pokemon{name: "Charmander", type: :fire, speed: 20}
     %Pokemon{name: "Charmander", type: :fire, health: 20, attack: 5, speed: 20}
   """
+
+  @doc """
+  returns if the attacker has a type advantage on the defender. 
+
+  ## Examples
+    iex> attacker = %Pokemon{name: "Charmander", type: :fire, health: 20, attack: 5, speed: 20}
+    iex> defender = %Pokemon{name: "Bulbasaur", type: :grass, health: 20, attack: 5, speed: 20}
+    iex> Pokemon.has_type_advantage(attacker, defender)
+    true 
+  """
+  def has_type_advantage?(attacker, defender) do
+    case {attacker.type, defender.type} do
+      {:fire, :grass} -> true
+      {:grass, :water} -> true
+      {:water, :fire} -> true
+      _else -> false
+    end
+  end
+
+  @doc """
+  returns if the attacker has a type disadvantage to the defender.
+
+  ## Examples
+    iex> attacker = %Pokemon{name: "Charmander", type: :fire, health: 20, attack: 5, speed: 20}
+    iex> defender = %Pokemon{name: "Bulbasaur", type: :grass, health: 20, attack: 5, speed: 20}
+    iex> Pokemon.has_type_advantage(attacker, defender)
+    false 
+  """
+  def has_type_disadvantage?(attacker, defender) do
+    case {attacker.type, defender.type} do
+      {:fire, :water} -> true
+      {:grass, :fire} -> true
+      {:water, :grass} -> true
+      _else -> false
+    end
+  end
 
   @doc """
   subtract the attack damage of an attacker from the defender's health.
@@ -110,8 +149,44 @@ defmodule Pokemon do
     %Pokemon{name: "Charmander", type: :fire, health: 10, attack: 5, speed: 20}
   """
   def attack(attacker, defender) do
+    # No magic numbers!
+    advantage_modifier = 2.0
+    disadvantage_modifier = 0.5
+
+    # Set a baseline for the damage modifier
+    damage_modifier = 1.0
+
+    # Reassign the damage modifier if there is an advantage/disadvantage
+    damage_modifier =
+      if has_type_advantage?(attacker, defender) do
+        advantage_modifier
+      else
+        damage_modifier
+      end
+
+    damage_modifier =
+      if has_type_disadvantage?(attacker, defender) do
+        disadvantage_modifier
+      else
+        damage_modifier
+      end
+
+    # Return the new Pokemon with new health value
+    %Pokemon{
+      name: defender.name,
+      type: defender.type,
+      speed: defender.speed,
+      attack: defender.attack,
+      health: defender.health - attacker.attack * damage_modifier
+    }
   end
 end
+
+attacker = %Pokemon{name: "Charmander", type: :fire, health: 20, attack: 5, speed: 20}
+defender = %Pokemon{name: "Bulbasaur", type: :grass, health: 20, attack: 5, speed: 20}
+
+Pokemon.has_type_disadvantage?(attacker, defender)
+Pokemon.attack(attacker, defender)
 ```
 
 ### Pokemon Instances
@@ -162,7 +237,9 @@ Pokemon.attack(charmander, bulbasaur)
 Enter your solution below.
 
 ```elixir
-
+charmander = %Pokemon{name: "Charmander", type: :fire, speed: 20}
+bulbasaur = %Pokemon{name: "Bulbasaur", type: :grass, speed: 15}
+squirtle = %Pokemon{name: "Squirtle", type: :water, speed: 10}
 ```
 
 ## Commit Your Progress
