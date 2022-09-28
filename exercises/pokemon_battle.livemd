@@ -71,6 +71,7 @@ Pokemon.attack(attacker, defender)
 ```elixir
 defmodule Pokemon do
   # Declare any variables without default values LEFT of those with default values 
+  @enforce_keys [:name, :type, :speed, :health, :attack]
   defstruct [:name, :type, :speed, health: 20, attack: 5]
 
   @moduledoc """
@@ -172,20 +173,25 @@ defmodule Pokemon do
       end
 
     # Return the new Pokemon with new health value
-    %Pokemon{
-      name: defender.name,
-      type: defender.type,
-      speed: defender.speed,
-      attack: defender.attack,
-      health: defender.health - attacker.attack * damage_modifier
-    }
+    # %Pokemon{
+    #   name: defender.name,
+    #   type: defender.type,
+    #   speed: defender.speed,
+    #   attack: defender.attack,
+    #   health: defender.health - attacker.attack * damage_modifier
+    # }
+
+    %{defender | health: defender.health - attacker.attack * damage_modifier}
   end
 end
+```
 
+```elixir
 attacker = %Pokemon{name: "Charmander", type: :fire, health: 20, attack: 5, speed: 20}
 defender = %Pokemon{name: "Bulbasaur", type: :grass, health: 20, attack: 5, speed: 20}
 
-Pokemon.has_type_disadvantage?(attacker, defender)
+# Pokemon.has_type_advantage?(attacker, defender)
+# Pokemon.has_type_disadvantage?(attacker, defender)
 Pokemon.attack(attacker, defender)
 ```
 
