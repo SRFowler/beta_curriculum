@@ -70,18 +70,25 @@ defmodule Votes do
 
   ## Examples
 
-    iex> VoterCount.count([:dogs, :dogs, :dogs, :cats], :dogs)
+    iex> Votes.count([:dogs, :dogs, :dogs, :cats], :dogs)
     3
 
-    iex> VoterCount.count([:dogs, :dogs, :dogs, :cats], :cats)
+    iex> Votes.count([:dogs, :dogs, :dogs, :cats], :cats)
     1
 
-    iex> VoterCount.count([:apples, :oranges, :apples, :cats], :birds)
+    iex> Votes.count([:apples, :oranges, :apples, :cats], :birds)
     0
   """
   def count(votes, vote) do
+    Enum.count(votes, fn item -> item == vote end)
   end
 end
+```
+
+```elixir
+Votes.count([:dogs, :dogs, :dogs, :cats, :cats, :birds], :dogs)
+Votes.count([:dogs, :dogs, :dogs, :cats], :cats)
+Votes.count([:apples, :oranges, :apples, :cats], :birds)
 ```
 
 ## Bonus: Voter Tally
@@ -120,8 +127,13 @@ defmodule Votes do
     %{dog: 2, cat: 3, bird: 1}
   """
   def tally(votes) do
+    Enum.frequencies(votes)
   end
 end
+```
+
+```elixir
+Votes.tally([:dog, :dog, :cat, :cat, :cat, :bird])
 ```
 
 ## Commit Your Progress
