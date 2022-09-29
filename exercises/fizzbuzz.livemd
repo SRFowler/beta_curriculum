@@ -69,7 +69,7 @@ defmodule FizzBuzz do
   def run(range) do
     Enum.map(range, fn num ->
       cond do
-        rem(num, 3) == 0 and rem(num, 5) == 0 -> "fizzbuzz"
+        rem(num, 15) == 0 -> "fizzbuzz"
         rem(num, 3) == 0 -> "fizz"
         rem(num, 5) == 0 -> "buzz"
         true -> num
