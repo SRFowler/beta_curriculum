@@ -74,6 +74,20 @@ defmodule Measurements do
     1
   """
   def increased(measurements) do
+    # measurements
+    # # Break into groups of 2 with step of 1 so they overlap.
+    # |> Enum.chunk_every(2, 1, :discard)
+    # # Return true if the second number is larger
+    # |> Enum.map(fn [x, y] -> y - x > 0 end)
+    # |> Enum.count(fn item -> item == true end)  # Count of trues
+
+    # Utilize increments function from below
+    # increments(measurements)
+    # |> Enum.count(fn item -> item > 0 end)
+
+    # Using capture operator until it looks less weird
+    increments(measurements)
+    |> Enum.count(&(&1 > 0))
   end
 
   @doc """
@@ -88,6 +102,9 @@ defmodule Measurements do
     [10, -10, 30]
   """
   def increments(measurements) do
+    measurements
+    |> Enum.chunk_every(2, 1, :discard)
+    |> Enum.map(fn [x, y] -> y - x end)
   end
 
   @doc """
@@ -103,6 +120,12 @@ defmodule Measurements do
     40
   """
   def increased_by(measurements) do
+    # This is increments above, just reduce to a list of positive numbers and sum that list
+    increments(measurements)
+    # |> Enum.filter(fn num -> num > 0 end)
+    # Use the capture operator until it looks normal
+    |> Enum.filter(&(&1 > 0))
+    |> Enum.sum()
   end
 
   @doc """
@@ -118,8 +141,28 @@ defmodule Measurements do
     6
   """
   def average(measurements) do
+    # Always returns a float
+    (Enum.sum(measurements) / Enum.count(measurements))
+    # Convert to int
+    |> trunc
   end
 end
+```
+
+```elixir
+Measurements.increased([1, 1, 2, 3, 1])
+```
+
+```elixir
+Measurements.increments([100, 150, 120, 130])
+```
+
+```elixir
+Measurements.increased_by([100, 150, 120, 130])
+```
+
+```elixir
+Measurements.average([2, 6])
 ```
 
 ## Commit Your Progress
