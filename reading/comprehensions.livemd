@@ -324,7 +324,7 @@ You can use <code>:binary.first/1</code> to convert a variable bound to a string
 
 ```elixir
 for c <- ["a", "b", "c", "d"], into: %{} do
-  {:"char_#{c}", :binary.first(c)}
+  {c, :binary.first(c)}
 end
 ```
 
@@ -336,8 +336,12 @@ chars =
   |> List.to_string()
   |> String.graphemes()
 
+# for c <- chars, into: %{} do
+#   {:"char_#{c}", :binary.first(c)}
+# end
+
 for c <- chars, into: %{} do
-  {:"char_#{c}", :binary.first(c)}
+  {c, :binary.first(c)}
 end
 ```
 
