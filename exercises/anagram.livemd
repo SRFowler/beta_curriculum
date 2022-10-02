@@ -60,6 +60,27 @@ defmodule Anagram do
   """
 
   def anagram?(string1, string2) do
+    get_letters(string1) == get_letters(string2)
+  end
+
+  @doc """
+  Returns an alphabitized list of all letters in a string, removing spaces.
+
+  ## Examples
+
+    iex Anagram.get_letters("Hello World")
+    ["d", "e", "h", "l", "l", "l", "o", "o", "r", "w"]
+  """
+  def get_letters(string) do
+    string
+    |> String.trim()
+    |> String.downcase()
+    # |> String.replace(~r"^[a-z]", "")   # This leaves spaces for some reason
+    |> String.graphemes()
+    |> Enum.filter(fn char -> char != " " end)
+    |> Enum.sort()
+
+    # |> Enum.join   # Return as a string
   end
 
   @doc """
@@ -79,6 +100,15 @@ defmodule Anagram do
   def filter_anagrams(word_list, anagram) do
   end
 end
+```
+
+```elixir
+Anagram.get_letters("Hello World")
+```
+
+```elixir
+# Anagram.anagram?("stop", "pots")
+Anagram.anagram?("cat", "dog")
 ```
 
 ## Bonus: Anagram Solver
