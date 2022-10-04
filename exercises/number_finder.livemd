@@ -43,6 +43,7 @@ defmodule NumberFinder do
     -3
   """
   def smallest(number_list) do
+    Enum.min(number_list)
   end
 
   @doc """
@@ -58,8 +59,14 @@ defmodule NumberFinder do
     20
   """
   def largest(number_list) do
+    Enum.max(number_list)
   end
 end
+```
+
+```elixir
+NumberFinder.smallest([2, 2, 3, 4, 10, 20, -3])
+NumberFinder.largest([2, 2, 3, 4, 10, 20, -3])
 ```
 
 ## Up Next
