@@ -22,6 +22,9 @@ Represent each book as a `Book` struct with `title` and `content` keys. Then cre
 
 ```elixir
 defmodule Book do
+  @enforce_keys [:title]
+  defstruct title: nil
+
   @moduledoc """
   Documentation for `Book`.
 
@@ -59,8 +62,30 @@ defmodule Book do
     [%Book{title: "ABC"}]
   """
   def search(books, query) do
+    Enum.filter(books, fn book ->
+      String.contains?(String.downcase(book.title), String.downcase(query))
+    end)
   end
 end
+```
+
+```elixir
+# Base case, exact match, test
+book1 = %Book{title: "A"}
+book2 = %Book{title: "B"}
+book3 = %Book{title: "C"}
+Book.search([book1, book2, book3], "A")
+```
+
+```elixir
+# Partial match test
+Book.search([%Book{title: "ABC"}], "A") |> IO.inspect()
+Book.search([%Book{title: "BAC"}], "A") |> IO.inspect()
+```
+
+```elixir
+# Patial match case insensitive test
+Book.search([%Book{title: "ABC"}], "a")
 ```
 
 ## Commit Your Progress
