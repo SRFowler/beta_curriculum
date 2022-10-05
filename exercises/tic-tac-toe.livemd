@@ -156,6 +156,17 @@ defmodule TicTacToe do
     "C"
   """
   def at(board, coordinate) do
+    # We get the width and height of the board to allow any sized board to be used
+    # then subtract 1 to have 0 indexed numbers. (This is WAY out of scope)
+    # width = Enum.count(Enum.at(board, 0)) - 1   # Not actially necessary here
+
+    height = Enum.count(board) - 1
+
+    {x, y} = coordinate
+
+    # The magic sauce.
+    # Enum.at(Enum.at(board, height - x), y) 
+    board |> Enum.at(height - x) |> Enum.at(y)
   end
 
   @doc """
@@ -179,8 +190,23 @@ defmodule TicTacToe do
   [[nil, "X", "O"], [nil, "X", "O"],[nil, nil, "X"]]
   """
   def fill(board, coordinate, symbol) do
+    {x, y} = coordinate
+    height = Enum.count(board) - 1
+    List.replace_at(Enum.at(board, height - y), x, symbol)
   end
 end
+```
+
+```elixir
+board = [["A", "B", "C"], ["D", "E", "F"], ["G", "H", "I"]]
+TicTacToe.at(board, {1, 1})
+```
+
+```elixir
+board = [[nil, nil, nil], [nil, nil, nil], [nil, nil, nil]]
+TicTacToe.fill(board, {0, 0}, "X") |> IO.inspect()
+TicTacToe.fill(board, {1, 1}, "O") |> IO.inspect()
+TicTacToe.fill(board, {2, 2}, "X") |> IO.inspect()
 ```
 
 ## Commit Your Progress
