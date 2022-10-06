@@ -206,7 +206,7 @@ DateTime.new!(Date.new!(2022, 4, 19), Time.new!(12, 0, 0))
 Enter your solution below.
 
 ```elixir
-
+datetime = ~U[1938-04-19 12:00:00Z]
 ```
 
 If you solved the challenge above using sigils, complete it again using functions. If you solved the challenge using functions, then complete it again using sigils.
@@ -214,7 +214,7 @@ If you solved the challenge above using sigils, complete it again using function
 Enter your new solution below.
 
 ```elixir
-DateTime.new!(~D[1938-04-18])
+DateTime.new(~D[1938-04-18], ~T[12:00:00])
 ```
 
 Create a [DateTime](https://hexdocs.pm/elixir/DateTime.html) for today at the current time in universal time.
@@ -231,7 +231,7 @@ DateTime.utc_now()
 Enter your solution below.
 
 ```elixir
-
+DateTime.utc_now()
 ```
 
 Use [DateTime.add/4](https://hexdocs.pm/elixir/DateTime.html#add/4) to add one day to the current [DateTime](https://hexdocs.pm/elixir/DateTime.html). This creates a new [DateTime](https://hexdocs.pm/elixir/DateTime.html) for tomorrow at the current time.
@@ -249,7 +249,7 @@ DateTime.add(DateTime.utc_now(), day_in_seconds)
 Enter your solution below
 
 ```elixir
-
+DateTime.add(DateTime.utc_now(), 1, :day)
 ```
 
 Use [DateTime.compare/2](https://hexdocs.pm/elixir/DateTime.html#compare/2) to compare the [DateTime](https://hexdocs.pm/elixir/DateTime.html) below with the current [DateTime](https://hexdocs.pm/elixir/DateTime.html). The `date` below should be `:lt` (less than) the current [DateTime](https://hexdocs.pm/elixir/DateTime.html).
@@ -268,6 +268,7 @@ Enter your solution below.
 
 ```elixir
 date = DateTime.new!(~D[2020-01-01], ~T[12:00:00])
+DateTime.compare(date, DateTime.utc_now())
 ```
 
 Use [DateTime.diff/3](https://hexdocs.pm/elixir/DateTime.html#diff/3) to determine how many seconds are between `2000-01-01` and `2010-01-01`.
@@ -287,7 +288,12 @@ DateTime.diff(finish, start)
 Enter your solution below.
 
 ```elixir
+# Must use DateTime.new!/2 as DateTime.new/2 returns a tuple and not just a DateTime
+start_date = DateTime.new!(~D[2000-01-01], ~T[01:00:00])
+end_date = DateTime.new!(~D[2010-01-01], ~T[01:00:00])
 
+# Second is the default and can be omitted
+DateTime.diff(end_date, start_date, :second)
 ```
 
 ## Timex
@@ -322,7 +328,7 @@ Use [Timex.now/1](https://hexdocs.pm/timex/Timex.html#now/1) to create a datetim
 to ensure it is correct.
 
 ```elixir
-
+Timex.now("America/New_York")
 ```
 
 ## Commit Your Progress
