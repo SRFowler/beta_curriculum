@@ -96,6 +96,12 @@ defmodule Timeline do
     [9, 12, 2]
   """
   def from_dates(dates) do
+    dates
+    |> Enum.chunk_every(2, 1, :discard)
+    |> Enum.map(fn dates ->
+      [date0, date1] = dates
+      Date.diff(date1, date0)
+    end)
   end
 
   @doc """
@@ -114,8 +120,24 @@ defmodule Timeline do
     [9, 12, 2]
   """
   def from_strings(date_strings) do
+    date_strings
+    |> Enum.map(&Date.from_iso8601!/1)
+    |> from_dates
   end
 end
+```
+
+```elixir
+Timeline.from_dates([~D[2020-01-01], ~D[2020-01-10], ~D[2020-01-22], ~D[2020-01-24]])
+|> IO.inspect()
+
+Timeline.from_strings(["2020-01-01", "2020-01-10", "2020-01-22", "2020-01-24"])
+```
+
+```elixir
+# Test block. Learning to convert strings to dates
+date = "2020-01-01"
+Date.from_iso8601!(date)
 ```
 
 ## Commit Your Progress
