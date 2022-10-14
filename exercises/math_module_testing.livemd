@@ -77,8 +77,155 @@ By planning test cases, we can anticipate possible edge cases and ensure we unde
 Test and implement a `Math` module. Include at least two assertions for the happy path cases (**strings**, **lists**, and **integers**.)
 
 ```elixir
-defmodule Math do
+defprotocol Math do
+  @doc "Provides Add and Subtract functionality"
+  @fallback_to_any true
+  # @fallback_to_any allows the below for: Any implementation
+  def add(a, b)
+  def subtract(a, b)
 end
+
+defimpl Math, for: Integer do
+  def add(a, b), do: a + b
+  def subtract(a, b), do: a - b
+end
+
+defimpl Math, for: BitString do
+  def add(a, b), do: a <> b
+  def subtract(a, b), do: Regex.compile!(b) |> Regex.replace(a, "") |> String.trim()
+end
+
+defimpl Math, for: List do
+  def add(a, b), do: a ++ b
+  def subtract(a, b), do: a -- b
+end
+
+defimpl Math, for: Any do
+  # This is here to throw a tuple rater than an error. Bonus!
+  def add(_a, _b), do: {:error, :bad_type}
+  def subtract(_a, _b), do: {:error, :bad_type}
+end
+```
+
+```elixir
+ExUnit.start(auto_run: false)
+
+defmodule MathTest do
+  use ExUnit.Case
+
+  describe "add/2" do
+    test "add/2 with integers happy path" do
+      assert Math.add(1, 1) == 2
+      assert Math.add(-1, -5) == -6
+    end
+
+    test "add/2 with strings happy path" do
+      assert Math.add("a", "b") == "ab"
+      assert Math.add("ab", "BA") == "abBA"
+    end
+
+    test "add/2 with lists happy path" do
+      assert Math.add([1], [2]) == [1, 2]
+      assert Math.add([:ok], [:error]) == [:ok, :error]
+    end
+
+    # Edge cases
+
+    test "add/2 with mixed types, int first" do
+      assert_raise ArithmeticError, fn -> Math.add(10, "-2") end
+    end
+
+    test "add/2 with mixed types, string first" do
+      assert_raise ArgumentError, fn -> Math.add("10", 3) end
+    end
+
+    test "add/2 with mixed types, list first" do
+      assert Math.add([:test], "a") == [:test | "a"]
+    end
+
+    test "add/2 Int to invalid data type" do
+      assert_raise ArithmeticError, fn -> Math.add(1, %{}) end
+    end
+
+    test "add/2 String to invalid data type" do
+      assert_raise ArgumentError, fn -> Math.add("Modern", %{}) end
+    end
+
+    test "add/2 List to invalid data type" do
+      assert Math.add(["Item"], %{}) == ["Item" | %{}]
+    end
+
+    test "add/2 Invaid data types" do
+      # assert_raise Protocol.UndefinedError, fn -> Math.add(%{}, %{}) end
+      assert Math.add(true, false) == {:error, :bad_type}
+    end
+
+    test "add/2 two empty lists" do
+      assert Math.add([], []) == []
+    end
+
+    test "add/2 two empty strings" do
+      assert Math.add("", "") == ""
+    end
+
+    test "add/2 a non-empty string to an empty string" do
+      assert Math.add("foo", "") == "foo"
+      assert Math.add("", "bar") == "bar"
+    end
+
+    test "add/2 a non-empty list to an empty list" do
+      assert Math.add(["words"], []) == ["words"]
+      assert Math.add([], ["wallaby"]) == ["wallaby"]
+    end
+  end
+
+  describe "subtract/2" do
+    test "subtract/2 Integers, happy path" do
+      assert Math.subtract(2, 2) == 0
+      assert Math.subtract(5, 0) == 5
+      assert Math.subtract(0, -10) == 10
+    end
+
+    test "subtract/2 Strings, happy path" do
+      assert Math.subtract("moonknight", "knight") == "moon"
+      assert Math.subtract("hexagon", "pie") == "hexagon"
+      assert Math.subtract("mirror", "") == "mirror"
+    end
+
+    test "subtract/2 Lists, happy path" do
+      assert Math.subtract([1, 2, 3, 4, 5], [1, 2, 3]) == [4, 5]
+    end
+
+    test "subtract/2 a valid data type and an invalid data type." do
+      assert_raise ArithmeticError, fn -> Math.subtract(1, %{}) end
+      assert_raise FunctionClauseError, fn -> Math.subtract("Word", %{}) end
+      assert_raise ArgumentError, fn -> Math.subtract(["rocko"], %{}) == ["rocko"] end
+    end
+
+    test "subtract two invalid data types." do
+      # assert_raise Protocol.UndefinedError, fn -> Math.subtract(%{}, %{}) end
+      assert Math.subtract(%{}, %{}) == {:error, :bad_type}
+    end
+
+    test "subtract two empty lists." do
+      assert Math.subtract([], []) == []
+    end
+
+    test "subtract two empty strings." do
+      assert Math.subtract("", "") == ""
+    end
+
+    test "subtract a string by an empty string." do
+      assert Math.subtract("fizz", "") == "fizz"
+    end
+
+    test "subtract a list by an empty list." do
+      assert Math.subtract(["this", :is, 'a', "list"], []) == ["this", :is, 'a', "list"]
+    end
+  end
+end
+
+ExUnit.run()
 ```
 
 ### Bonus: Edge Cases
