@@ -108,55 +108,56 @@ ExUnit.start(auto_run: false)
 defmodule ProductsTest do
   use ExUnit.Case
 
-  products = [
+  @products [
     %{name: "Laptop", category: :tech, price: 100_000},
     %{name: "Phone", category: :tech, price: 50000},
     %{name: "Chocolate", category: :snacks, price: 200},
     %{name: "Shampoo", category: :health, price: 1000}
   ]
 
-  describe "Empty filters should return all products" do
-    assert length(Products.filter(products)) == 4
+  test "Empty filters should return all products" do
+    assert length(Products.filter(@products)) == 4
   end
 
-  describe "Filter with full name should return only exact match" do
-    assert length(Products.filter(products, name: "Phone")) == 1
+  test "Filter with full name should return only exact match" do
+    assert length(Products.filter(@products, name: "Phone")) == 1
   end
 
-  describe "Filter full name with mixed case should return only exact match" do
-    assert length(Products.filter(products, name: "PhONe")) == 1
+  test "Filter full name with mixed case should return only exact match" do
+    assert length(Products.filter(@products, name: "PhONe")) == 1
   end
 
-  describe "Filter with partial name should return only matching items" do
-    assert length(Products.filter(products, name: "A")) == 3
+  test "Filter with partial name should return only matching items" do
+    assert length(Products.filter(@products, name: "A")) == 3
   end
 
-  describe "Filter category shound return only matching items" do
-    assert length(Products.filter(products, category: :tech)) == 2
+  test "Filter category shound return only matching items" do
+    assert length(Products.filter(@products, category: :tech)) == 2
   end
 
-  describe "Filter with Min should return only items with price above the passed value" do
-    assert length(Products.filter(products, min: 1000)) == 3
+  test "Filter with Min should return only items with price above the passed value" do
+    assert length(Products.filter(@products, min: 1000)) == 3
   end
 
-  describe "Filter with Max should return only items with price below the passed value" do
-    assert length(Products.filter(products, min: 2000)) == 2
+  test "Filter with Max should return only items with price below the passed value" do
+    assert length(Products.filter(@products, min: 2000)) == 2
   end
 
-  describe "Filter with Min and Max should return only items with price in range" do
-    assert length(Products.filter(products, min: 1000, max: 60_000)) == 2
+  test "Filter with Min and Max should return only items with price in range" do
+    assert length(Products.filter(@products, min: 1000, max: 60_000)) == 2
   end
 
-  describe "Filter with Max below all items should return no items" do
-    assert length(Products.filter(products, max: 0)) == 0
+  test "Filter with Max below all items should return no items" do
+    assert length(Products.filter(@products, max: 0)) == 0
   end
 
-  describe "Filter with name, category, min and max should return only items in range" do
-    assert length(Products.filter(products, min: 0, max: 60_000, name: "o", category: :tech)) == 1
+  test "Filter with name, category, min and max should return only items in range" do
+    assert length(Products.filter(@products, min: 0, max: 60_000, name: "o", category: :tech)) ==
+             1
   end
 
-  describe "Filter on category with no members should return nothing" do
-    assert length(Products.filter(products, category: :movies)) == 0
+  test "Filter on category with no members should return nothing" do
+    assert length(Products.filter(@products, category: :movies)) == 0
   end
 end
 
