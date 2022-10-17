@@ -115,49 +115,76 @@ defmodule ProductsTest do
     %{name: "Shampoo", category: :health, price: 1000}
   ]
 
-  test "Empty filters should return all products" do
-    assert length(Products.filter(@products)) == 4
+  test "filter/2 with empty filters should return all products" do
+    assert Products.filter(@products) == [
+             %{name: "Laptop", category: :tech, price: 100_000},
+             %{name: "Phone", category: :tech, price: 50000},
+             %{name: "Chocolate", category: :snacks, price: 200},
+             %{name: "Shampoo", category: :health, price: 1000}
+           ]
   end
 
-  test "Filter with full name should return only exact match" do
-    assert length(Products.filter(@products, name: "Phone")) == 1
+  test "filter/2 with full name should return only exact match" do
+    assert Products.filter(@products, name: "Phone") == [
+             %{name: "Phone", category: :tech, price: 50000}
+           ]
   end
 
-  test "Filter full name with mixed case should return only exact match" do
-    assert length(Products.filter(@products, name: "PhONe")) == 1
+  test "filter/2 full name with mixed case should return only exact match" do
+    assert Products.filter(@products, name: "PhONe") == [
+             %{name: "Phone", category: :tech, price: 50000}
+           ]
   end
 
-  test "Filter with partial name should return only matching items" do
-    assert length(Products.filter(@products, name: "A")) == 3
+  test "filter/2 with partial name should return only matching items" do
+    assert Products.filter(@products, name: "A") == [
+             %{name: "Laptop", category: :tech, price: 100_000},
+             %{name: "Chocolate", category: :snacks, price: 200},
+             %{name: "Shampoo", category: :health, price: 1000}
+           ]
   end
 
-  test "Filter category shound return only matching items" do
-    assert length(Products.filter(@products, category: :tech)) == 2
+  test "filter/2 category shound return only matching items" do
+    assert Products.filter(@products, category: :tech) == [
+             %{name: "Laptop", category: :tech, price: 100_000},
+             %{name: "Phone", category: :tech, price: 50000}
+           ]
   end
 
-  test "Filter with Min should return only items with price above the passed value" do
-    assert length(Products.filter(@products, min: 1000)) == 3
+  test "filter/2 with Min should return only items with price above the passed value" do
+    assert Products.filter(@products, min: 1000) == [
+             %{name: "Laptop", category: :tech, price: 100_000},
+             %{name: "Phone", category: :tech, price: 50000},
+             %{name: "Shampoo", category: :health, price: 1000}
+           ]
   end
 
-  test "Filter with Max should return only items with price below the passed value" do
-    assert length(Products.filter(@products, min: 2000)) == 2
+  test "filter/2 with Max should return only items with price below the passed value" do
+    assert Products.filter(@products, min: 2000) == [
+             %{name: "Laptop", category: :tech, price: 100_000},
+             %{name: "Phone", category: :tech, price: 50000}
+           ]
   end
 
-  test "Filter with Min and Max should return only items with price in range" do
-    assert length(Products.filter(@products, min: 1000, max: 60_000)) == 2
+  test "filter/2 with Min and Max should return only items with price in range" do
+    assert Products.filter(@products, min: 1000, max: 60_000) == [
+             %{category: :tech, name: "Phone", price: 50000},
+             %{category: :health, name: "Shampoo", price: 1000}
+           ]
   end
 
-  test "Filter with Max below all items should return no items" do
-    assert length(Products.filter(@products, max: 0)) == 0
+  test "filter/2 with Max below all items should return no items" do
+    assert Products.filter(@products, max: 0) == []
   end
 
-  test "Filter with name, category, min and max should return only items in range" do
-    assert length(Products.filter(@products, min: 0, max: 60_000, name: "o", category: :tech)) ==
-             1
+  test "filter/2 with name, category, min and max should return only items in range" do
+    assert Products.filter(@products, min: 0, max: 60_000, name: "o", category: :tech) == [
+             %{name: "Phone", category: :tech, price: 50000}
+           ]
   end
 
-  test "Filter on category with no members should return nothing" do
-    assert length(Products.filter(@products, category: :movies)) == 0
+  test "filter/2 on category with no members should return nothing" do
+    assert Products.filter(@products, category: :movies) == []
   end
 end
 
