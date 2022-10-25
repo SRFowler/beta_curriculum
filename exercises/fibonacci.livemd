@@ -89,9 +89,24 @@ defmodule Fibonacci do
     iex> FIbonacci.of(20)
     4181
   """
-  def of(n) do
+  def of(1), do: 0
+  def of(2), do: 1
+
+  def of(num) do
+    of(num - 2) + of(num - 1)
   end
 end
+```
+
+```elixir
+# Fibonacci.of(1)
+# Fibonacci.of(2)
+# Fibonacci.of(3)
+# Fibonacci.of(4)
+# Fibonacci.of(5)
+# Fibonacci.of(6)
+# Fibonacci.of(7)
+Fibonacci.of(20)
 ```
 
 ## Commit Your Progress
