@@ -108,7 +108,17 @@ defmodule Lucas do
     iex> Lucas.number(20)
     9349
   """
-  def number(n) do
+  def number(1), do: 2
+  def number(2), do: 1
+
+  def number(num) do
+    number(num - 2) + number(num - 1)
+  end
+
+  ## Refactor to use Lucas.sequence
+
+  def numberv2(n) do
+    hd(get_sequence(1, n, []))
   end
 
   @doc """
@@ -132,9 +142,40 @@ defmodule Lucas do
     [2, 1, 3, 4, 7, 11, 18, 29, 47, 76]
   """
 
-  def sequence(length) do
-  end
+  def sequence(length), do: get_sequence(1, length, []) |> Enum.reverse()
+
+  ## Base case should be position > length. Return the list at that point
+  defp get_sequence(position, length, list) when position > length, do: list
+
+  # Recursion requires the list have the first two elements. These cases provide just those if requested
+  defp get_sequence(1, length, _list), do: get_sequence(2, length, [2])
+  defp get_sequence(2, length, list), do: get_sequence(3, length, [1 | list])
+
+  # The core solution
+  defp get_sequence(position, length, list),
+    do: get_sequence(position + 1, length, [hd(list) + hd(tl(list)) | list])
 end
+```
+
+```elixir
+# Lucas.number(1)
+# Lucas.number(2)
+# Lucas.number(3)
+# Lucas.number(4)
+# Lucas.number(5)
+# Lucas.number(6)
+# Lucas.number(41)
+```
+
+```elixir
+## Refactored version that leverages Lucas.sequence
+# Lucas.numberv2(40_000)
+```
+
+```elixir
+# Lucas.sequence(1)
+# Lucas.sequence(2)
+Lucas.sequence(100_000)
 ```
 
 ## Commit Your Progress
