@@ -170,7 +170,7 @@ Try changing `number` to `2`, `3`, and `4`. Notice how it creates more lists, wi
 elements for each increase in number.
 
 ```elixir
-number = 1
+number = 10
 
 Enum.map(1..number, fn _ ->
   Enum.to_list(1..number)
@@ -314,7 +314,7 @@ C13 --> C133
 Try changing `number` to `2`, `3`, and `4`. Notice how it creates $n^3$ elements.
 
 ```elixir
-number = 3
+number = 4
 
 Enum.map(1..number, fn _ ->
   Enum.map(1..number, fn _ ->
@@ -473,7 +473,7 @@ defmodule Permutations do
   end
 end
 
-list = [1, 2, 3]
+list = [1, 2, 3, 4, 5, 6, 7, 8]
 Permutations.of(list)
 ```
 
