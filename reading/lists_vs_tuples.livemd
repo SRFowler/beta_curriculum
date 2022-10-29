@@ -100,6 +100,32 @@ We can use `tuple_size` to count the length of a tuple, and `length` to determin
 The exact result will be different each time, however as expected, the tuple is nearly instant and the
 list takes far longer.
 
+<!-- livebook:{"break_markdown":true} -->
+
+### Goofing off
+
+Checking the time of summing a list vs tuple
+
+```elixir
+{tuple_time, _result} = :timer.tc(fn -> Tuple.sum(large_tuple) end)
+{list_time, _result} = :timer.tc(fn -> Enum.sum(large_list) end)
+
+%{tuple: tuple_time, list: list_time}
+```
+
+**More goofing off...**  
+This is commented out because the list_to_list function is SUPER slow and I don't want to add about 12 seconds of processing time for just that call every time the cell evaluates.
+
+```elixir
+# More goofing off
+
+# {tuple_to_list, _result} = :timer.tc(fn -> Tuple.to_list(large_tuple) end)
+# {list_to_list, _result} = :timer.tc(fn -> Enum.map(large_list, &(&1)) end)
+# {reverse_list, _result} = :timer.tc(fn -> Enum.reverse(large_list) end)
+
+# %{tuple_to_list: tuple_to_list, list_to_list: list_to_list, reverse_list: reverse_list}
+```
+
 ## Prepending
 
 Prepending in a list is fast, because we only need to create a new pair of elements in memory
@@ -147,7 +173,25 @@ In the Elixir cell below, use the `:timer.tc/1` function to time how long it tak
 `50000` elements. Then do the same for tuples.
 
 ```elixir
+medium_list = Enum.to_list(1..50_000)
+medium_tuple = List.to_tuple(medium_list)
 
+{small_tuple_time, _result} =
+  :timer.tc(fn -> for n <- 1..100, do: Tuple.insert_at(medium_tuple, 0, n) end)
+
+{small_list_time, _result} = :timer.tc(fn -> for n <- 1..100, do: [n | medium_list] end)
+
+# {large_tuple_time, _result} =
+#   :timer.tc(fn -> for n <- 1..100, do: Tuple.insert_at(large_tuple, 0, n) end)
+
+# {large_list_time, _result} = :timer.tc(fn -> for n <- 1..100, do: [n | large_list] end)
+
+%{
+  small_tuple: small_tuple_time,
+  small_list: small_list_time
+  # large_tuple: large_tuple_time,
+  # large_list: large_list_time
+}
 ```
 
 ## Accessing
@@ -213,7 +257,21 @@ to access the first element, and last element of a list with `5000` elements.
 Then do the same for tuples.
 
 ```elixir
+small_list = Enum.to_list(1..5_000)
+small_tuple = List.to_tuple(medium_list)
 
+{tuple_first_time, _result} = :timer.tc(fn -> elem(small_tuple, 0) end)
+{tuple_last_time, _result} = :timer.tc(fn -> elem(small_tuple, 5_000) end)
+
+{list_first_time, _result} = :timer.tc(fn -> Enum.at(large_list, 0) end)
+{list_last_time, _result} = :timer.tc(fn -> Enum.at(large_list, 5_000) end)
+
+%{
+  tuple_first: tuple_first_time,
+  tuple_last: tuple_last_time,
+  list_first: list_first_time,
+  list_last: list_last_time
+}
 ```
 
 ## Concatenation
@@ -272,7 +330,12 @@ to concatenate a list with one element and a list with 5000 elements.
 Then try to concatenate a list with 5000 elements to a list with 1 element. Notice how it takes longer.
 
 ```elixir
+small_list = Enum.to_list(1..5_000)
 
+{small_first, _result} = :timer.tc(fn -> [1] ++ small_list end)
+{larger_first, _result} = :timer.tc(fn -> small_list ++ [1] end)
+
+%{small_first: small_first, larger_first: larger_first}
 ```
 
 ## Updating (Replacing)
@@ -310,7 +373,8 @@ put_elem(tuple, 2, 7)
 Let's compare the time it takes to update the first element of a list and tuple of equal size.
 
 ```elixir
-{tuple_time, _result} = :timer.tc(fn -> :erlang.setelement(1, large_tuple, 7) end)
+# {tuple_time, _result} = :timer.tc(fn -> :erlang.setelement(1, large_tuple, 7) end)
+{tuple_time, _result} = :timer.tc(fn -> put_elem(large_tuple, 1, 7) end)
 {list_time, _result} = :timer.tc(fn -> List.replace_at(large_list, 0, 7) end)
 
 %{tuple: tuple_time, list: list_time}
@@ -330,6 +394,17 @@ The list is far slower now that it needs to look through the entire list, while 
 the same speed as updating the first element.
 
 <!-- livebook:{"break_markdown":true} -->
+
+### Compare Erlang and Elixir
+
+For some reason Brook used `:erlang.setelment` in the example above, so I got curious as to if it's signifigantly faster than the Elixir alternative.
+
+```elixir
+{erlang_setelment, _result} = :timer.tc(fn -> :erlang.setelement(1, large_tuple, 7) end)
+{put_elem, _result} = :timer.tc(fn -> put_elem(large_tuple, 1, 7) end)
+
+%{erlang_setelment: erlang_setelment, put_elem: put_elem}
+```
 
 ### Your Turn
 
