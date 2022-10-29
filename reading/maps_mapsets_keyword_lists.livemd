@@ -99,7 +99,7 @@ key = 500_000
 
 {micro_seconds, _result} = :timer.tc(fn -> Map.get(large_map, key) end)
 
-micro_seconds
+%{access_time: micro_seconds}
 ```
 
 On the other hand, Lists are slow compared to Maps because they need to enumerate each element.
@@ -111,7 +111,7 @@ large_list = Enum.to_list(1..1_000_000)
 Try changing `index` to any integer between `0` and `999_999` and notice that the larger the index value, the slower it takes to access an element.
 
 ```elixir
-index = 500_000
+index = 900_000
 
 {micro_seconds, _result} = :timer.tc(fn -> Enum.at(large_list, index) end)
 
@@ -198,7 +198,7 @@ Create a MapSet with the elements `1, 2, 3`. Use [MapSet.member?/2](https://hexd
 the element `2`. Your answer should return `true`.
 
 ```elixir
-
+MapSet.member?(MapSet.new([1, 2, 3]), 2)
 ```
 
 ## Commit Your Progress
