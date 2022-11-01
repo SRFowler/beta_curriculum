@@ -44,8 +44,18 @@ defmodule Fibonacci do
 
     iex> 
   """
-  def sequence(length) do
-  end
+  def sequence(length), do: get_sequence(1, length, []) |> Enum.reverse()
+
+  ## Base case should be position > length. Return the list at that point
+  defp get_sequence(position, length, list) when position > length, do: list
+
+  # Recursion requires the list have the first two elements. These cases provide just those if requested
+  defp get_sequence(1, length, _list), do: get_sequence(2, length, [0])
+  defp get_sequence(2, length, list), do: get_sequence(3, length, [1 | list])
+
+  # The core solution
+  defp get_sequence(position, length, list),
+    do: get_sequence(position + 1, length, [hd(list) + hd(tl(list)) | list])
 end
 ```
 
@@ -55,9 +65,28 @@ In the Elixir cell below, create a `FastFib` module. The `FastFib` module should
 
 ```elixir
 defmodule FastFib do
-  def sequence(length) do
-  end
+  def sequence(length), do: get_sequence(1, length, []) |> Enum.reverse()
+
+  ## Base case should be position > length. Return the list at that point
+  defp get_sequence(position, length, list) when position > length, do: list
+
+  # Recursion requires the list have the first two elements. These cases provide just those if requested
+  defp get_sequence(1, length, _list), do: get_sequence(2, length, [0])
+  defp get_sequence(2, length, list), do: get_sequence(3, length, [1 | list])
+
+  # The core solution
+  @spec get_sequence(integer(), integer(), [integer()]) :: [integer()]
+  defp get_sequence(position, length, list),
+    do: get_sequence(position + 1, length, [hd(list) + hd(tl(list)) | list])
 end
+```
+
+### Correctness Check
+
+A quick test to show that FastFib is returning the expected list.
+
+```elixir
+FastFib.sequence(10)
 ```
 
 Use [Benchee](https://hexdocs.pm/benchee/Benchee.html) to benchmark the performance of `FastFib.sequence/1` function. The student in the class with the fastest `FastFib` time wins.
@@ -69,13 +98,13 @@ Benchee.run(
   },
   inputs: %{
     "1: small" => 10,
-    "2: medium" => 30
+    "2: medium" => 30,
     # Uncomment the following if your solution can handle it! 
     # Make sure to add a comma above.
-    # "3: large" => 100,
-    # "4: xl" => 1000,
-    # "6: 2xl" => 10000,
-    # "7: 3xl" => 100_000
+    "3: large" => 100,
+    "4: xl" => 1000,
+    "6: 2xl" => 10000,
+    "7: 3xl" => 100_000
   },
   memory_time: 2
 )
