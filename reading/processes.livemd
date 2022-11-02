@@ -191,7 +191,8 @@ Spawn a linked process and crash this Elixir cell below.
 Comment out your solution when complete to avoid continuously crashing the livebook!
 
 ```elixir
-
+# This crashes the cell
+# crash_pid = spawn_link(fn -> raise "broken" end)
 ```
 
 ## Message Passing
@@ -237,7 +238,21 @@ In the Elixir cell below, spawn a new process and send it a message `{:hello, "w
 `IO.puts` the message's payload where `"world"` is the payload.
 
 ```elixir
+hello_pid =
+  spawn(fn ->
+    receive do
+      {:hello, payload} -> IO.puts(payload)
+    end
+  end)
+```
 
+```elixir
+# Testing a thing
+# Will not run, no matching 'receive'
+send(hello_pid, {:error, "OOPS"})
+send(hello_pid, {:hello, "Mars"})
+# Will not run, process has died without a loop.
+send(hello_pid, {:hello, "world"})
 ```
 
 ## State
@@ -283,6 +298,43 @@ We've used [Enum.random/1](https://hexdocs.pm/elixir/Enum.html#random/1) to show
 
 ```elixir
 send(server_process, "message")
+
+# Proving the server lives
+for _ <- 1..5, do: send(server_process, "message")
+```
+
+### Greeting Server
+
+Testing making a Server Process with a recursive loop call that handles input and stays alive after the first call.
+
+```elixir
+defmodule GreetServer do
+  def loop() do
+    receive do
+      "James" -> goodbye()
+      name -> hello(name)
+    end
+  end
+
+  defp hello(name) do
+    IO.puts("Hello #{name}!")
+    loop()
+  end
+
+  defp goodbye() do
+    IO.puts("Goodbye Jimmy!")
+    loop()
+  end
+end
+
+greet_process = spawn(fn -> GreetServer.loop() end)
+```
+
+```elixir
+send(greet_process, "World")
+send(greet_process, "Mars")
+send(greet_process, "James")
+send(greet_process, "Moon")
 ```
 
 With a slight modification of the `ServerProcess`, we can store state!
@@ -323,7 +375,7 @@ Try evaluating the cell below over and over again. Notice that the counter value
 We now have stateful processes!
 
 ```elixir
-send(counter_process, :increment)
+for _ <- 1..5, do: send(counter_process, :increment)
 ```
 
 Stateful processes are short-term in-memory persistence. We can create a stateful process
@@ -342,17 +394,18 @@ defmodule Counter do
 
     receive do
       :increment -> loop(state + 1)
+      :decrement -> loop(state - 1)
     end
   end
 end
 
-counter_process = spawn(fn -> CounterProcess.loop() end)
+counter_process = spawn(fn -> Counter.loop() end)
 ```
 
 You should be able to send a `:decrement` message to a spawned `Counter`. Uncomment and evaluate the code below to test your solution.
 
 ```elixir
-# send(counter_process, :decrement)
+send(counter_process, :decrement)
 ```
 
 ## Commit Your Progress
