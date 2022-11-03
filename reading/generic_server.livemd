@@ -397,7 +397,7 @@ sequenceDiagram
 
 <!-- livebook:{"break_markdown":true} -->
 
-This is the heart of generic servers. We can create an in-memory process have it store some state. Then, we send the process messages to perform some work and return a response. Generic servers are often the go-to tool for short-term in-memory persistence.
+This is the heart of generic servers. We can create an in-memory process, have it store some state. Then, we send the process messages to perform some work and return a response. Generic servers are often the go-to tool for short-term in-memory persistence.
 
 The built-in [GenServer](https://hexdocs.pm/elixir/GenServer.html) also has some additional functionality, which will become more important
 as you work with concurrency. But, for now, we're going to focus on using it as a tool for persistence, so
@@ -517,7 +517,7 @@ See [Client / Server APIs](https://hexdocs.pm/elixir/1.12/GenServer.html#module-
 
 Sometimes we want to name our processes so there is only ever a single named process rather than referring to many processes by their PID. These are sometimes called **singletons**.
 
-Here, we have a simplified `NamedCounter` [GenServer](https://hexdocs.pm/elixir/GenServer.html) that will server as our singleton example.
+Here, we have a simplified `NamedCounter` [GenServer](https://hexdocs.pm/elixir/GenServer.html) that will serve as our singleton example.
 
 ```elixir
 defmodule NamedCounter do
