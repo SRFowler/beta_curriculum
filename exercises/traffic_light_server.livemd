@@ -133,6 +133,7 @@ defmodule TrafficLightServer do
   @doc """
   Transition the `TrafficLightServer`'s state.
 
+
   ## Examples
 
       iex> {:ok, pid} = TrafficLightServer.start_link()
@@ -309,8 +310,7 @@ defmodule TrafficGridServer do
       iex> TraffigGridServer.start_link([])
       {:ok, pid}
   """
-  def start_link(_opts) do
-  end
+  def start_link(), do: GenServer.start_link(__MODULE__, [])
 
   @doc """
   transition the current light state of the next light to transition.
@@ -333,8 +333,7 @@ defmodule TrafficGridServer do
       iex> TrafficGridServer.transition(pid)
       [:red, :red, :yellow, :yellow, :yellow]
   """
-  def transition(grid_pid) do
-  end
+  def transition(grid_pid), do: GenServer.call(grid_pid, :transition)
 
   @doc """
   Retrieve the current light state of each managed `TrafficLightServer`.
@@ -345,9 +344,57 @@ defmodule TrafficGridServer do
       iex> TrafficGridServer.current_lights(pid)
       [:green, :green, :green, :green, :green]
   """
-  def current_lights(grid_pid) do
+  def current_lights(grid_pid), do: GenServer.call(grid_pid, :current_lights)
+
+  ## SERVER CALLBACKS
+  def init(_opts) do
+    # Make 5 linked instances of TraficLightServer. We need to pattern match out
+    # only the pid of the returned {:ok, pid}
+    light_pids =
+      Enum.map(1..5, fn _ ->
+        {:ok, pid} = TrafficLightServer.start_link()
+        pid
+      end)
+
+    # Returning {:ok, initial_state} where initial state is a map containing a list of 
+    # light pids and the light to transition.
+    {:ok, %{light_pids: light_pids, transition_index: 0}}
+  end
+
+  @impl true
+  def handle_call(:current_lights, _from, state) do
+    # lights_staus is a list of atoms returned by calling current_light/1 on 
+    # every light in state.light_pids
+    lights_status = Enum.map(state.light_pids, &TrafficLightServer.current_light/1)
+
+    # No state change, pass back the initial state.
+    {:reply, lights_status, state}
+  end
+
+  @impl true
+  def handle_call(:transition, _from, state) do
+    # Get the pid of the light we want to transition, stored in state.transion_index
+    light_pid = Enum.at(state.light_pids, state.transition_index)
+    # Call transition/1 on the target light
+    TrafficLightServer.transition(light_pid)
+
+    # We need to return a list of light states, so call current_light on each light, 
+    # basically a copy of handle_call :current_lights above
+    lights = Enum.map(state.light_pids, &TrafficLightServer.current_light/1)
+    next_transition_index = rem(state.transition_index + 1, length(state.light_pids))
+
+    {:reply, lights, %{state | transition_index: next_transition_index}}
   end
 end
+```
+
+```elixir
+{:ok, pid} = TrafficGridServer.start_link()
+TrafficGridServer.current_lights(pid)
+TrafficGridServer.transition(pid)
+# TrafficGridServer.transition(pid)
+# TrafficGridServer.transition(pid)
+# TrafficGridServer.transition(pid)
 ```
 
 ## Commit Your Progress
