@@ -179,7 +179,8 @@ Process.exit(pid, :exit)
 Re-evaluate the diagram above and you should see a new `Worker` process started with a different pid. Repeat this process to kill each process under the supervisor and see them restarted.
 
 ```elixir
-
+pdi = :c.pid(0, 730, 0)
+Process.exit(pid, :exit)
 ```
 
 ## Restart Strategies
