@@ -74,37 +74,71 @@ end
 Implement the `Timer` module as documented below. You will also have to implement the necessary [GenServer](https://hexdocs.pm/elixir/GenServer.html) callback functions such as [GenServer.init/1](https://hexdocs.pm/elixir/GenServer.html#init/1), [GenServer.handle_info/2](https://hexdocs.pm/elixir/GenServer.html#handle_info/2), and [GenServer.handle_call/3](https://hexdocs.pm/elixir/GenServer.html#handle_call/3).
 
 ```elixir
-# defmodule Timer do
-#   @moduledoc """
-#   Documentation for `Timer`
-#   """
-#   use GenServer
+defmodule Timer do
+  @moduledoc """
+  Documentation for `Timer`
+  """
+  use GenServer
 
-#   @doc """
-#   Start the `Timer` process.
+  @doc """
+  Start the `Timer` process.
 
-#   ## Examples
+  ## Examples
 
-#       iex> {:ok, pid} = Timer.start_link([])
-#   """
-#   def start_link(_opts) do
-#   end
+      iex> {:ok, pid} = Timer.start_link([])
+  """
+  def start_link(_opts \\ []) do
+    GenServer.start_link(__MODULE__, [])
+  end
 
-#   @doc """
-#   Get the number of seconds that have elapsed since the `Timer` was started.
+  @doc """
+  Get the number of seconds that have elapsed since the `Timer` was started.
 
-#   ## Examples
+  ## Examples
 
-#     iex> {:ok, pid} = Timer.start_link([])
-#     iex> Timer.seconds(pid)
-#     0
-#     iex> Process.sleep(1200)
-#     iex> Timer.seconds(pid)
-#     1
-#   """
-#   def seconds(timer_pid) do
-#   end
-# end
+    iex> {:ok, pid} = Timer.start_link([])
+    iex> Timer.seconds(pid)
+    0
+    iex> Process.sleep(1200)
+    iex> Timer.seconds(pid)
+    1
+  """
+  def seconds(timer_pid) do
+    GenServer.call(timer_pid, :seconds)
+  end
+
+  defp schedule_tick() do
+    Process.send_after(self(), :tick, 1000)
+  end
+
+  # Server Callbacks
+
+  @impl true
+  def init(_opts) do
+    schedule_tick()
+    {:ok, 0}
+  end
+
+  @impl true
+  def handle_info(:tick, state) do
+    schedule_tick()
+    {:noreply, state + 1}
+  end
+
+  @impl true
+  def handle_call(:seconds, _from, state) do
+    {:reply, state, state}
+  end
+end
+```
+
+```elixir
+{:ok, pid} = Timer.start_link()
+Timer.seconds(pid) |> IO.puts()
+Process.sleep(1200)
+Timer.seconds(pid) |> IO.puts()
+Process.sleep(3000)
+Timer.seconds(pid) |> IO.puts()
 ```
 
 ## Bonus :timer
@@ -166,7 +200,32 @@ defmodule AlternateTimer do
   def seconds(timer_pid) do
     GenServer.call(timer_pid, :seconds)
   end
+
+  # Server Callbacks
+  @impl true
+  def init(_opts) do
+    :timer.send_interval(1000, self(), :tick)
+    {:ok, 0}
+  end
+
+  @impl true
+  def handle_info(:tick, state) do
+    {:noreply, state + 1}
+  end
+
+  @impl true
+  def handle_call(:seconds, _from, state) do
+    {:reply, state, state}
+  end
 end
+```
+
+```elixir
+{:ok, pid} = AlternateTimer.start_link([])
+```
+
+```elixir
+AlternateTimer.seconds(pid)
 ```
 
 ## Commit Your Progress
