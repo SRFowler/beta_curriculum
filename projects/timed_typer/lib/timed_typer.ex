@@ -1,4 +1,4 @@
-defmodule TimedTyper do
+defmodule TimedTyper.Play do
   use GenServer
 
   @word_list ["red", "green", "blue", "yellow", "orange"]

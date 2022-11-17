@@ -162,7 +162,26 @@ execution and parallel execution.
 You may consider using [Process.sleep/1](https://hexdocs.pm/elixir/Process.html#sleep/1) to simulate an expensive computation.
 
 ```elixir
+wait1 = fn -> Process.sleep(1000) end
+wait2 = fn -> Process.sleep(1000) end
 
+{sync, _result} =
+  :timer.tc(fn ->
+    task1 = Task.async(fn -> wait1.() end)
+    task2 = Task.async(fn -> wait2.() end)
+
+    Task.await(task1)
+    Task.await(task2)
+  end)
+
+{ms, _result} =
+  :timer.tc(fn ->
+    wait1.()
+    wait2.()
+  end)
+
+IO.puts(sync / 1000 / 1000)
+IO.puts(ms / 1000 / 1000)
 ```
 
 ## Awaiting Many Tasks

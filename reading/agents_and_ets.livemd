@@ -110,6 +110,9 @@ However, the `:ets` table will only store one value for a given key.
 
 ```elixir
 :ets.insert(table, {:key, "value"})
+:ets.insert(table, {:color, "green"})
+
+table
 ```
 
 ### Named Tables
@@ -147,7 +150,9 @@ secret identities.
 ```
 
 ```elixir
-
+:ets.new(:super_heros, [:named_table])
+:ets.insert(:super_heros, {"Spider Man", "Peter Parker"})
+:ets.lookup(:super_heros, "Spider Man")
 ```
 
 ## ETS Configuration
@@ -458,7 +463,11 @@ Depending on your computer, we recommend you don't use `SlowFib` with a value la
 However, `CachedFib` should handle larger numbers.
 
 ```elixir
+{slow, _result} = :timer.tc(fn -> SlowFib.of(15) end)
+{cached, _result} = :timer.tc(fn -> CachedFib.of(10_000_000) end)
 
+IO.inspect(slow, label: "Slow")
+IO.inspect(cached, label: "Cached")
 ```
 
 ### Your Turn

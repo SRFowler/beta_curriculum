@@ -9,7 +9,11 @@ defmodule TimedTyper.Application do
   def start(_type, _args) do
     children = [
       # Starts a worker by calling: TimedTyper.Worker.start_link(arg)
-      {TimedTyper, []}
+      # {TimedTyper.Play, []},
+      %{
+        id: :timer,
+        start: {TimedTyper.Timer, :start_link, [[time: 2000]]}
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

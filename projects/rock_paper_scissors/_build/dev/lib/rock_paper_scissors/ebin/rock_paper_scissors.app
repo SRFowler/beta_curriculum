@@ -1,0 +1,10 @@
+{application,rock_paper_scissors,
+    [{applications,[kernel,stdlib,elixir,logger]},
+     {description,"rock_paper_scissors"},
+     {modules,
+         ['Elixir.RockPaperScissors','Elixir.RockPaperScissors.Application']},
+     {registered,[]},
+     {vsn,"0.1.0"},
+     {mod,
+         {'Elixir.RockPaperScissors.Application',
+             [<<"Starting Application">>]}}]}.
