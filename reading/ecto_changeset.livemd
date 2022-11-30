@@ -269,7 +269,17 @@ keys = [:title, :content]
 </details>
 
 ```elixir
+initial_data = %{}
 
+params = %{title: "Catch-22", content: "It was love at first sight."}
+types = %{title: :string, content: :string}
+keys = [:title, :content]
+
+{initial_data, types}
+|> Ecto.Changeset.cast(params, keys)
+|> Ecto.Changeset.validate_required([:title, :content])
+|> Ecto.Changeset.validate_length(:title, min: 3, max: 100)
+|> Ecto.Changeset.apply_action(:update)
 ```
 
 ## Schemaless Changesets
